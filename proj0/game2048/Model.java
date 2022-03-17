@@ -113,7 +113,41 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+        for (int i = 0 ; i<size() ; i++){
+            boolean[] mark={true,true,true,true};
+            for (int j = size()-2 ;j>=0 ; j--){
+                boolean count =true;
+                int k=j+1;
+                int target=j;
+                if (board.tile(i,j)==null){continue;}
+                while(count){
+                    if(k<size()){
+                        if(mark[k]){
+                            if(board.tile(i,k)==null){
+                                target=k;
+                                k++;
+                                changed=true;
+                                continue;
+                            }else if(board.tile(i,k).value()==board.tile(i,j).value()){
+                                    target=k;
+                                    count=false;
+                                    mark[k]=false;
+                                    changed=true;
+                                    score+= 2 * board.tile(i,j).value();
+                                }
+                            }
+                        }
+                    count=false;
+                }
+                Tile t = board.tile(i,j);
+                board.move(i,target,t);
 
+
+                }
+
+            }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
@@ -138,6 +172,15 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+
+        for (int i = 0; i<4;i++){
+            for (int j = 0 ; j <4;j++){
+                if(b.tile(i,j)==null){
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -148,6 +191,14 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for (int i = 0; i<4;i++){
+            for (int j = 0 ; j <4;j++){
+                if(b.tile(i,j)==null){continue;}
+                if(b.tile(i,j).value()==2048){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +210,20 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        for (int i = 0; i<4;i++){
+            for (int j = 0 ; j <4;j++){
+                if(b.tile(i,j)==null){return true;}
+                if(i>=1){
+                    if((b.tile(i,j).value()==b.tile(i-1,j).value())){
+                        return true;
+                    }}
+                if(j>=1){if((b.tile(i,j).value()==b.tile(i,j-1).value())){
+                    return true;
+                }
+
+                }
+            }
+        }
         return false;
     }
 
