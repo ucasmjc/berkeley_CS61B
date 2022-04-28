@@ -10,9 +10,9 @@ public class CheckLabConfig {
 			               repoDir);
 		checkIsValidRepo(repoDir, repoVariableName, isWindows, false);
 
-<<<<<<< HEAD
 
-=======
+
+
 		String snapsVariableName = "SNAPS_DIR";
 		String snapsRepoDir = System.getenv(snapsVariableName);
 
@@ -21,7 +21,7 @@ public class CheckLabConfig {
 			               " environment variable, which is currently set to: " +
 			               snapsRepoDir);
 		checkIsValidRepo(snapsRepoDir, snapsVariableName, isWindows, true);
->>>>>>> 160747451c147c59d8e3cbf70a7afee2b73bebdb
+
 	}
 
 	public static void checkVariableNotNull(String value, String name) {
