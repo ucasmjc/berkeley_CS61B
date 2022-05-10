@@ -1,8 +1,8 @@
-package student;
+package deque;
 
 import java.util.Iterator;
 
-public class StudentArrayDeque<T> implements Iterable<T>{
+public class ArrayDeque<T> implements Iterable<T>,Deque<T>{
     private T[] items;
     private int size;
     private int nextfirst;
@@ -11,15 +11,17 @@ public class StudentArrayDeque<T> implements Iterable<T>{
     public T[] sorted;
     private int last;
     private int first;
-
+    @Override
     public int size(){return size;}
-    public StudentArrayDeque(){
+
+    public ArrayDeque(){
         items=(T[])new Object[8];
         size=0;
         nextfirst=7;
         nextlast=0;
         capture=8;
     }
+
     public void mask(){
         if(nextlast==0){
             last=capture-1;
@@ -56,14 +58,15 @@ public class StudentArrayDeque<T> implements Iterable<T>{
     }
     public void resize(){
         if(nextfirst==nextlast){
-            trick(capture*1.5);
+           trick(capture*1.5);
         }
         if(size>=16){
             if(((nextfirst>nextlast)&&((nextfirst-nextlast+1)/size>0.7))||((nextfirst<nextlast)&&((nextlast-nextfirst)/size<0.3))){
-                trick(0.6*capture);
+                    trick(0.6*capture);
             }
         }
     }
+    @Override
     public void addFirst(T x){
         items[nextfirst]=x;
         size++;
@@ -74,6 +77,7 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         }
         resize();
     }
+    @Override
     public void addLast(T x){
         items[nextlast]=x;
         size++;
@@ -84,12 +88,8 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         }
         resize();;
     }
-    public boolean isEmpty(){
-        if(size==0){
-            return true;
-        }
-        return false;
-    }
+
+    @Override
     public void printDeque(){
         if (size > 0) {
             mask();
@@ -113,15 +113,18 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         System.out.println();
 
     }
+    @Override
     public T removeFirst(){
         if(size==0){return  null;}
-        mask();
+       mask();
         nextfirst=first;
         T leo=items[first];
         items[first]=null;
         size--;
+        resize();
         return leo;
     }
+    @Override
     public T removeLast(){
         if(size==0){return  null;}
         mask();
@@ -129,19 +132,22 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         T leo=items[last];
         items[last]=null;
         size--;
+        resize();
         return leo;
     }
+    @Override
     public T get(int index) {
         if (index > size - 1) {
             return null;
         }
-        int ma = nextfirst + index+1;
+        int ma = nextfirst + 1 + index;
         if (ma >= capture) {
             return items[ma-capture];
         }else{
             return items[ma];
         }
     }
+
     public class ArrayIterator implements Iterator<T>{
         private int mark;
         private T[] ite;
@@ -158,8 +164,27 @@ public class StudentArrayDeque<T> implements Iterable<T>{
             return ite[mark-1];
         }
     }
+    @Override
     public Iterator<T> iterator(){
         return new ArrayIterator();
     }
-
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof ArrayDeque){
+           ArrayDeque p=(ArrayDeque) o;
+            if(p.size()!=size){return false;}
+            if(size==0){
+                return true;
+            }
+            p.sort();
+            this.sort();
+            for(int i=0;i<size;i++){
+                if(!sorted[i].equals(p.sorted[i])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

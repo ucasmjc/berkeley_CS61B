@@ -1,8 +1,11 @@
-package student;
+package deque;
 
+import net.sf.saxon.expr.sort.ComparableAtomicValueComparer;
+
+import java.util.Comparator;
 import java.util.Iterator;
 
-public class StudentArrayDeque<T> implements Iterable<T>{
+public class MaxArrayDeque<T> implements Iterable<T> {
     private T[] items;
     private int size;
     private int nextfirst;
@@ -11,14 +14,41 @@ public class StudentArrayDeque<T> implements Iterable<T>{
     public T[] sorted;
     private int last;
     private int first;
-
+    private Comparator<T> compear;
     public int size(){return size;}
-    public StudentArrayDeque(){
+    public MaxArrayDeque(Comparator<T> c){
         items=(T[])new Object[8];
         size=0;
         nextfirst=7;
         nextlast=0;
         capture=8;
+        compear=c;
+    }
+    public T max(){
+        if(size==0){
+            return null;
+        }
+        sort();
+        int index=0;
+        for(int i =0;i<size-1;i++){
+            if(compear.compare(sorted[i],sorted[index])>=0){
+                index=i;
+            }
+        }
+        return sorted[index];
+    }
+    public T max(Comparator<T> c){
+        if(size==0){
+            return null;
+        }
+        sort();
+        int index=0;
+        for(int i =0;i<size-1;i++){
+            if(c.compare(sorted[i],sorted[index])>=0){
+                index=i;
+            }
+        }
+        return sorted[index];
     }
     public void mask(){
         if(nextlast==0){
@@ -120,6 +150,7 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         T leo=items[first];
         items[first]=null;
         size--;
+        resize();
         return leo;
     }
     public T removeLast(){
@@ -129,20 +160,21 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         T leo=items[last];
         items[last]=null;
         size--;
+        resize();
         return leo;
     }
     public T get(int index) {
         if (index > size - 1) {
             return null;
         }
-        int ma = nextfirst + index+1;
+        int ma = nextfirst + 1 + index;
         if (ma >= capture) {
             return items[ma-capture];
         }else{
             return items[ma];
         }
     }
-    public class ArrayIterator implements Iterator<T>{
+    public class ArrayIterator implements Iterator<T> {
         private int mark;
         private T[] ite;
         public ArrayIterator(){
@@ -159,7 +191,25 @@ public class StudentArrayDeque<T> implements Iterable<T>{
         }
     }
     public Iterator<T> iterator(){
-        return new ArrayIterator();
+        return new MaxArrayDeque.ArrayIterator();
+    }
+    public boolean equals(Object o){
+        if(o instanceof ArrayDeque){
+            ArrayDeque p=(ArrayDeque) o;
+            if(p.size()!=size){return false;}
+            if(size==0){
+                return true;
+            }
+            p.sort();
+            this.sort();
+            for(int i=0;i<size;i++){
+                if(!sorted[i].equals(p.sorted[i])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
 }
