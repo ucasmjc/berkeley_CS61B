@@ -1,8 +1,5 @@
 package deque;
 
-import afu.org.checkerframework.checker.igj.qual.I;
-import jh61b.junit.In;
-
 import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Iterable<T>,Deque<T> {
@@ -106,7 +103,7 @@ public class LinkedListDeque<T> implements Iterable<T>,Deque<T> {
     public Iterator<T> iterator(){
         return new LinkedIterator();
     }
-    @Override
+
     public boolean equals(Object o){
         if(o instanceof LinkedListDeque){
             LinkedListDeque p=(LinkedListDeque) o;
