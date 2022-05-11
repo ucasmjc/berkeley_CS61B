@@ -62,11 +62,13 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     private void resize(){
         if (nextfirst == nextlast) {
            trick(capture*1.5);
+           sorted = null;
         }
         if (size >= 16) {
 
-            if (((nextfirst > nextlast)&&((nextfirst - nextlast + 1) / capture > 0.7))||((nextfirst < nextlast)&&((nextlast - nextfirst) / capture < 0.3))) {
+            if (((nextfirst > nextlast)&&((nextfirst - nextlast + 1) / (double)capture > 0.7))||((nextfirst < nextlast)&&((nextlast - nextfirst) / (double)capture < 0.3))) {
                     trick(0.6*capture);
+                    sorted = null;
             }
         }
     }
@@ -80,6 +82,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             nextfirst--;
         }
         resize();
+        sorted = null;
     }
     @Override
     public void addLast(T x) {
@@ -91,6 +94,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             nextlast++;
         }
         resize();;
+        sorted = null;
     }
 
     @Override
@@ -128,6 +132,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         items[first] = null;
         size--;
         resize();
+        sorted = null;
         return leo;
     }
     @Override
@@ -141,6 +146,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         items[last] = null;
         size--;
         resize();
+        sorted = null;
         return leo;
     }
     @Override

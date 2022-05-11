@@ -94,10 +94,12 @@ public class MaxArrayDeque<T> implements Iterable<T> {
     private void resize() {
         if (nextfirst == nextlast) {
             trick(capture * 1.5);
+            sorted = null;
         }
         if (size >= 16) {
             if (((nextfirst > nextlast) && ((nextfirst - nextlast + 1) / capture > 0.7)) || ((nextfirst < nextlast) && ((nextlast - nextfirst) / capture < 0.3))) {
                 trick(0.6 * capture);
+                sorted = null;
             }
         }
     }
@@ -111,6 +113,7 @@ public class MaxArrayDeque<T> implements Iterable<T> {
             nextfirst--;
         }
         resize();
+        sorted = null;
     }
 
     public void addLast(T x) {
@@ -122,7 +125,7 @@ public class MaxArrayDeque<T> implements Iterable<T> {
             nextlast++;
         }
         resize();
-        ;
+        ;sorted = null;
     }
 
     public boolean isEmpty() {
@@ -166,6 +169,7 @@ public class MaxArrayDeque<T> implements Iterable<T> {
         items[first] = null;
         size--;
         resize();
+        sorted = null;
         return leo;
     }
 
@@ -179,6 +183,7 @@ public class MaxArrayDeque<T> implements Iterable<T> {
         items[last] = null;
         size--;
         resize();
+        sorted = null;
         return leo;
     }
 
