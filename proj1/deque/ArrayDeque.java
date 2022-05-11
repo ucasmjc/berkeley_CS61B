@@ -66,8 +66,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         }
         if (capture >= 16) {
             if (((nextfirst > nextlast) && ((nextfirst - nextlast + 1) / (double) capture > 0.7))
-                    || ((nextfirst < nextlast) &&
-                    ((nextlast - nextfirst) / (double) capture < 0.3))) {
+                    || ((nextfirst < nextlast)
+                    && ((nextlast - nextfirst) / (double) capture < 0.3))) {
                 trick(0.3 * capture);
                 sorted = null;
             }
