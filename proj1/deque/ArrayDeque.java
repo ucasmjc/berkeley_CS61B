@@ -64,10 +64,11 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             trick(capture * 1.2);
             sorted = null;
         }
-        if (size >= 16) {
+        if (capture >= 16) {
             if (((nextfirst > nextlast) && ((nextfirst - nextlast + 1) / (double) capture > 0.7))
-                    || ((nextfirst < nextlast) && ((nextlast - nextfirst) / (double) capture < 0.3))) {
-                trick(0.35 * capture);
+                    || ((nextfirst < nextlast) &&
+                    ((nextlast - nextfirst) / (double) capture < 0.3))) {
+                trick(0.3 * capture);
                 sorted = null;
             }
         }
@@ -165,7 +166,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     private class ArrayIterator implements Iterator<T> {
         private int mark;
         private T[] ite;
-        public ArrayIterator() {
+        ArrayIterator() {
             mark = 0;
             sort();
             ite = sorted;
@@ -185,14 +186,14 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Deque) {
-           Deque p = (Deque) o;
+            Deque p = (Deque) o;
             if (p.size() != size) {
                 return false;
             }
             if (size == 0) {
                 return true;
             }
-            for (int i = 0;i < size;i++) {
+            for (int i = 0; i < size; i++) {
                 if (!get(i).equals(p.get(i))) {
                     return false;
                 }

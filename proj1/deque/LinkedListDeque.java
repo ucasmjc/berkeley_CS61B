@@ -88,7 +88,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     private class LinkedIterator implements Iterator<T> {
         private int mark;
         private IntNode now;
-        public LinkedIterator() {
+        LinkedIterator() {
             mark = 0;
             now = sentinel;
         }
