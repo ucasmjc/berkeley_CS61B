@@ -3,44 +3,38 @@ package deque;
 import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
-    public class IntNode {
-        public IntNode last;
-        public IntNode next;
-        public T item;
+    private class IntNode {
+        private IntNode last;
+        private IntNode next;
+        private T item;
 
-        public IntNode(T get, IntNode gnext,IntNode glast) {
+        private IntNode(T get, IntNode gnext, IntNode glast) {
             item = get;
             next = gnext;
             last = glast;
         }
     }
-    public IntNode sentinel;
+    private IntNode sentinel;
     private int size;
     @Override
     public int size() {
         return size;
     }
     public LinkedListDeque() {
-        sentinel = new IntNode(null,null,null);
+        sentinel = new IntNode(null, null, null);
         sentinel.next = sentinel;
         sentinel.last = sentinel;
         size = 0;
     }
-    public LinkedListDeque(T x) {
-        sentinel = new IntNode(null,null,null);
-        sentinel.next = new IntNode(x,sentinel,sentinel);
-        sentinel.last = sentinel.next;
-        size = 1;
-    }
     @Override
     public void addFirst(T x) {
-        sentinel.next = new IntNode(x,sentinel.next,sentinel);
+        sentinel.next = new IntNode(x, sentinel.next, sentinel);
         sentinel.next.next.last = sentinel.next;
         size += 1;
     }
     @Override
     public void addLast(T x) {
-        sentinel.last.next = new IntNode(x,sentinel,sentinel.last);
+        sentinel.last.next = new IntNode(x, sentinel, sentinel.last);
         sentinel.last = sentinel.last.next;
         size += 1;
     }
@@ -58,7 +52,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
     @Override
     public T removeFirst() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         T i = sentinel.next.item;
@@ -69,7 +63,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
     @Override
     public T removeLast() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         T i = sentinel.last.item;
@@ -80,7 +74,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
     @Override
     public T get(int index) {
-        if(size < index+1) {
+        if (size < index + 1) {
             return null;
         }
         IntNode p = sentinel.next;
@@ -91,7 +85,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         return p.item;
     }
 
-    public class LinkedIterator implements Iterator<T> {
+    private class LinkedIterator implements Iterator<T> {
         private int mark;
         private IntNode now;
         public LinkedIterator() {
@@ -120,7 +114,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
             if (size == 0) {
                 return true;
             }
-            for (int i = 0;i < size;i++) {
+            for (int i = 0; i < size; i++) {
                 if (!get(i).equals(p.get(i))) {
                     return false;
                 }
@@ -130,7 +124,10 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         return false;
     }
     public T getRecursive(int index) {
-        if (size < index + 1) {
+        if ((size == 0) && (sentinel.next == null)) {
+            return null;
+        }
+        if ((size < index + 1) && (size != 0)) {
             return null;
         }
         if (index == 0) {

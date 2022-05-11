@@ -16,7 +16,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         return size;
     }
     public ArrayDeque() {
-        items = (T[])new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
         nextfirst = 7;
         nextlast = 0;
@@ -29,46 +29,46 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         } else {
             last = nextlast - 1;
         }
-        if (nextfirst == capture-1) {
+        if (nextfirst == capture - 1) {
             first = 0;
         } else {
             first = nextfirst + 1;
         }
     }
     private void sort() {
-        T[] a = (T[])new Object[capture];
+        T[] a = (T[]) new Object[capture];
         mask();
         if (size == 0) {
             return;
         }
         if (last > first) {
-            System.arraycopy(items,first,a,0,size);
+            System.arraycopy(items, first, a, 0, size);
         } else {
-            System.arraycopy(items,first,a,0,capture - first);
-            System.arraycopy(items,0,a,capture - first,last + 1);
+            System.arraycopy(items, first, a, 0, capture - first);
+            System.arraycopy(items, 0, a, capture - first, last + 1);
         }
         this.sorted = a;
     }
     private void trick(double x) {
-        int cap = (int)Math.round(x);
-        T[] a = (T[])new Object[cap];
+        int cap = (int) Math.round(x);
+        T[] a = (T[]) new Object[cap];
         sort();
-        System.arraycopy(sorted,0,a,0,size);
+        System.arraycopy(sorted, 0, a, 0, size);
         nextfirst = cap - 1;
         nextlast = size;
         items = a;
         capture = cap;
     }
-    private void resize(){
+    private void resize() {
         if (nextfirst == nextlast) {
-           trick(capture*1.5);
-           sorted = null;
+            trick(capture * 1.2);
+            sorted = null;
         }
         if (size >= 16) {
-
-            if (((nextfirst > nextlast)&&((nextfirst - nextlast + 1) / (double)capture > 0.7))||((nextfirst < nextlast)&&((nextlast - nextfirst) / (double)capture < 0.3))) {
-                    trick(0.6*capture);
-                    sorted = null;
+            if (((nextfirst > nextlast) && ((nextfirst - nextlast + 1) / (double) capture > 0.7))
+                    || ((nextfirst < nextlast) && ((nextlast - nextfirst) / (double) capture < 0.3))) {
+                trick(0.35 * capture);
+                sorted = null;
             }
         }
     }
@@ -93,7 +93,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         } else {
             nextlast++;
         }
-        resize();;
+        resize();
         sorted = null;
     }
 
@@ -102,16 +102,16 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (size > 0) {
             mask();
             if (last > first) {
-                for (int i = first;i <= last;i++) {
+                for (int i = first; i <= last; i++) {
                     System.out.print(items[i]);
                     System.out.print(' ');
                 }
             } else {
-                for (int i = first;i < capture;i++) {
+                for (int i = first; i < capture; i++) {
                     System.out.print(items[i]);
                     System.out.print(' ');
                 }
-                for (int i = 0;i <= last;i++) {
+                for (int i = 0; i <= last; i++) {
                     System.out.print(items[i]);
                     System.out.print(' ');
                 }
@@ -126,7 +126,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (size == 0) {
             return null;
         }
-       mask();
+        mask();
         nextfirst = first;
         T leo = items[first];
         items[first] = null;
