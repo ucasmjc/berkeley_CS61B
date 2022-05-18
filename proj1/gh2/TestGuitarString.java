@@ -11,15 +11,23 @@ import static org.junit.Assert.*;
  *  @author Josh Hug
  */
 public class TestGuitarString  {
+    public class Animal {
+        int speak(Dog a) { return 1; }
+        int speak(Animal a) { return 2; }
+    }
+    public class Dog extends Animal {
+        int speak(Animal a) { return 3; }
+    }
+    public class Poodle extends Dog {
+        int speak(Dog a) { return 4; }
+
+    }
 
     @Test
     public void testPluckTheAString() {
-        GuitarString aString = new GuitarString(GuitarHeroLite.CONCERT_A);
-        aString.pluck();
-        for (int i = 0; i < 50000; i += 1) {
-            StdAudio.play(aString.sample());
-            aString.tic();
-        }
+        Animal a =new Poodle();
+        a.speak(new Animal());
+
     }
 
     @Test
