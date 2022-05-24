@@ -8,7 +8,7 @@ import java.util.concurrent.RecursiveTask;
 
 import edu.princeton.cs.algs4.BST;
 
-public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
     private int size;
     private BSTNode root;
 
@@ -192,5 +192,8 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K>
         Set<K> set = new HashSet<>();
         set = getSet(set, root);
         return set;
+    }
+    public void printInOrder() {
+        
     }
 }
