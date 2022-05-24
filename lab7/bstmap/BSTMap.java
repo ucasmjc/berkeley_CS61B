@@ -1,8 +1,10 @@
 package bstmap;
 import java.lang.UnsupportedOperationException;
 import java.lang.reflect.Array;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.RecursiveTask;
 
 import edu.princeton.cs.algs4.BST;
 
@@ -28,22 +30,24 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K>
     }
     public void clear() {
         root = null;
+        size = 0;
     }
 
-    private void put(BSTNode x, K k, V v) {
+    private BSTNode put(BSTNode x, K k, V v) {
         if (x == null) {
-            x = new BSTNode(k, v);
+            return new BSTNode(k, v);
         }
         else {
             int m = k.compareTo(x.key);
             if (m < 0) {
-                put(x.left, k, v);
+                x.left = put(x.left, k, v);
             } else if (m > 0) {
-                put(x.right, k, v);
+                x.right = put(x.right, k, v);
             } else {
                 x.value = v;
             }
         }
+        return x;
     }
     public void put(K k, V v) {
         if (root == null) {
@@ -98,7 +102,17 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K>
     public V remove(K key){
         if (root.key.compareTo(key) == 0) {
             V val = root.value;
-            root = null;
+            if (root.right != null) {
+                BSTNode x = root.right;
+                while (x.left != null) {
+                    x = x.left;
+                }
+                x.left = root.left;
+                root = root.right;
+            } else {
+                root = root.left;
+            }
+            size--;
             return val;
         }
         BSTNode parent = null;
@@ -108,17 +122,40 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K>
             if (x.key.compareTo(key) < 0) {
                 x = x.right;
             } else {
-                x = x.right;
+                x = x.left;
+            }
+            if (x == null) {
+                return null;
             }
         }
+        BSTNode right = x.right;
+        BSTNode left = x.left;
+        V value = x.value;
         if (parent.key.compareTo(key) < 0) {
-            parent.right = x.right;
-            parent.right.left = x.left;
+            if (right != null) {
+                parent.right = right;
+                x = parent.right;
+                while (x.left != null) {
+                    x = x.left;
+                }
+                x.left = left;
+            } else {
+                parent.right = left;
+            }
         } else {
-            parent.left = x.left;
-            parent.left.right = x.right;
+            if (left != null) {
+                parent.left = left;
+                x = parent.left;
+                while (x.right != null) {
+                    x = x.left;
+                }
+                x.left = left;
+            } else {
+                parent.right = left;
+            }
         }
-        return x.value;
+        size--;
+        return value;
     }
     private class KeyIterator implements Iterator<K>{
         Set<K> set;
@@ -152,7 +189,7 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K,V>, Iterable<K>
         return Set;
     }
     public Set<K> keySet() {
-        Set<K> set = null;
+        Set<K> set = new HashSet<>();
         set = getSet(set, root);
         return set;
     }
