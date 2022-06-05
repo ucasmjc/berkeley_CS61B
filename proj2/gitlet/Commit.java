@@ -2,6 +2,12 @@ package gitlet;
 
 // TODO: any imports you need here
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.TreeMap;
+
 import java.util.Date; // TODO: You'll likely use this in this class
 
 /** Represents a gitlet commit object.
@@ -10,7 +16,7 @@ import java.util.Date; // TODO: You'll likely use this in this class
  *
  *  @author TODO
  */
-public class Commit {
+public class Commit implements Serializable{
     /**
      * TODO: add instance variables here.
      *
@@ -20,7 +26,26 @@ public class Commit {
      */
 
     /** The message of this Commit. */
-    private String message;
-
+    public String message;
+    public String time;
+    public String shaCode;
+    public String parent;
+    public TreeMap<String, String> document;
+    public Commit(String Mes) {
+        parent = null;
+        message = Mes;
+        time = "Mon Jan 1 08:00:00 1970 +0800";
+        document = new TreeMap<>();
+    }
+    public String shaCode() {
+        shaCode = Utils.sha1(Utils.serialize(this));
+        return shaCode;
+    }
+    public String time() {
+        Date now = new Date();
+        DateFormat B = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+        time = B.format(now) + " +0800";
+        return time;
+    }
     /* TODO: fill in the rest of this class. */
 }

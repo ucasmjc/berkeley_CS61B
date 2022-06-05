@@ -10,13 +10,58 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO: what if args is empty?
+        if (args == null) {
+            System.out.println("Please enter a command.");
+            System.exit(0);
+        }
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
+                Repository.init();
                 // TODO: handle the `init` command
                 break;
             case "add":
+                Repository.add(args[1]);
+                break;
                 // TODO: handle the `add [filename]` command
+            case "commit":
+                Repository.commit(args[1]);
+                break;
+            case "remove":
+                Repository.remove(args[1]);
+                break;
+            case "log":
+                Repository.log();
+                break;
+            case "global-log":
+                Repository.globallog();
+                break;
+            case "find":
+                Repository.find(args[1]);
+                break;
+            case "status" :
+                Repository.status();
+                break;
+            case "checkout":
+                if (args[1].contains("--")) {
+                    String[] tar = args[1].split("--");
+                    if (tar.length == 2) {
+                        Repository.checkout2(tar[0],tar[1]);
+                    } else {
+                        Repository.checkout1(args[2]);
+                    }
+                } else {
+                    Repository.chenkout3(args[1]);
+                }
+                break;
+            case "branch":
+                Repository.branch(args[1]);
+                break;
+            case "rm-branch":
+                Repository.rmbranch(args[1]);
+                break;
+            case "reset":
+                Repository.reset(args[1]);
                 break;
             // TODO: FILL THE REST IN
         }

@@ -69,7 +69,7 @@ public class CapersRepository {
      */
     public static void makeDog(String name, String breed, int age) {
         Dog j = new Dog(name,breed,age);
-        File a = Utils.join(".capers","dogs",name+".txt");
+        File a = Utils.join(".capers","dogs",name);
         try {
             writeObject(a,j);
             a.createNewFile();
