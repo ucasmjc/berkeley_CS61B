@@ -75,7 +75,6 @@ public class Repository {
         if (presentfile.exists()) {
             boolean mark = true;
             CommitTree presentTree = readObject(committree, CommitTree.class);
-            System.out.println(presentTree.HEAD);
             Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
             File[] added = stage.listFiles();
             File wait = join(".gitlet", "stage", "addpart", x);
@@ -125,7 +124,6 @@ public class Repository {
         }
         presentTree.add(next);
         presentTree.HEAD = next.shaCode;
-        System.out.println(mes);
         writeObject(committree, presentTree);
     }
     public static void remove(String x) {
@@ -156,7 +154,7 @@ public class Repository {
         while (present != null) {
             System.out.println("===");
             System.out.println("commit " + present.shaCode);
-            System.out.println("Date:" + present.time);
+            System.out.println("Date: " + present.time);
             System.out.println(present.message);
             System.out.println();
             present = getparent(present);
