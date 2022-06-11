@@ -45,7 +45,6 @@ public class CommitTree implements Serializable {
     public void createcomfile(Commit y) {
         File x = new File(".gitlet/commit/" + y.shaCode);
         writeObject(x, y);
-        createFile(x);
     }
     public void add(Commit com) {//没考虑分支
         com.parent = HEAD;

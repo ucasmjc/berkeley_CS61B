@@ -194,6 +194,7 @@ public class Repository {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
+
         Commit present = readObject(a, Commit.class);
         String y = present.document.get(name);
         if (y == null) {
@@ -202,7 +203,7 @@ public class Repository {
         } else {
             File p = new File(".gitlet/content/" + y);
             File q = new File(name);
-            writeContents(q, readContents(p));
+            writeContents(q, Utils.readContents(p));
         }
     }
     public static void checkout1(String name) {

@@ -49,10 +49,10 @@ public class Main {
             case "checkout":
                 if (args[1].contains("--")) {
                     String[] tar = args[1].split("--");
-                    if (tar.length == 2) {
+                    if (!tar[0].equals("")) {
                         Repository.checkout2(tar[0],tar[1]);
                     } else {
-                        Repository.checkout1(args[2]);
+                        Repository.checkout1(tar[1]);
                     }
                 } else {
                     Repository.chenkout3(args[1]);
