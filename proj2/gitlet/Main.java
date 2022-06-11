@@ -47,13 +47,10 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
-                if (args[1].contains("--")) {
-                    String[] tar = args[1].split("--");
-                    if (!tar[0].equals("")) {
-                        Repository.checkout2(tar[0],tar[1]);
-                    } else {
-                        Repository.checkout1(tar[1]);
-                    }
+                if (args[1].equals("--")) {
+                    Repository.checkout1(args[2]);
+                } else if (args[2].equals("--")) {
+                    Repository.checkout2(args[1], args[3]);
                 } else {
                     Repository.chenkout3(args[1]);
                 }
@@ -67,6 +64,8 @@ public class Main {
             case "reset":
                 Repository.reset(args[1]);
                 break;
+            case "merge":
+
             // TODO: FILL THE REST IN
         }
     }

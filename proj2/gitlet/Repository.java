@@ -186,7 +186,31 @@ public class Repository {
         }
     }
     public static void status() {
-
+        CommitTree presentTree = readObject(committree, CommitTree.class);
+        String present = presentTree.present.name;
+        System.out.println("=== Branches ===");
+        for (String i : presentTree.branchset.keySet()) {
+            if (present.equals(i)) {
+                System.out.println("*" + i);
+            } else {
+                System.out.println(i);
+            }
+        }
+        System.out.println();
+        System.out.println("=== Staged Files ===");
+        for (String i : plainFilenamesIn(".gitlet/stage/addpart")) {
+            System.out.println(i);
+        }
+        System.out.println();
+        System.out.println("=== Removed Files ===");
+        for (String i : plainFilenamesIn(".gitlet/stage/removepart")) {
+            System.out.println(i);
+        }
+        System.out.println();
+        System.out.println("=== Modifications Not Staged For Commit ===");
+        System.out.println();
+        System.out.println("=== Untracked Files ===");
+        System.out.println();
     }
     private static void checkout(String name, String id) {
         File a = new File(commitPath + id);
@@ -213,16 +237,7 @@ public class Repository {
     public static void checkout2(String id, String name) {
         checkout(name,id);
     }
-    public static void chenkout3(String name) {
-        CommitTree presentTree = readObject(committree, CommitTree.class);
-        if (!presentTree.branchset.containsKey(name)) {
-            System.out.println("No such branch exists.");
-            System.exit(0);
-        }
-        if (name.equals(presentTree.present.name)) {
-            System.out.println("No need to checkout the current branch.");
-            System.exit(0);
-        }
+    private static void filewash (CommitTree presentTree, String newer) {
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
         List<String> filelist = plainFilenamesIn(CWD);
         for (String i : filelist) {
@@ -239,8 +254,6 @@ public class Repository {
                 a.delete();
             }
         }
-        presentTree.present = presentTree.branchset.get(name);
-        String newer = presentTree.present.head;
         presentTree.HEAD = newer;
         Commit next = readObject(new File(commitPath + newer), Commit.class);
         for (String i : next.document.keySet()) {
@@ -254,6 +267,20 @@ public class Repository {
             i.delete();
         }
         writeObject(committree,presentTree);
+    }
+    public static void chenkout3(String name) {
+        CommitTree presentTree = readObject(committree, CommitTree.class);
+        if (!presentTree.branchset.containsKey(name)) {
+            System.out.println("No such branch exists.");
+            System.exit(0);
+        }
+        if (name.equals(presentTree.present.name)) {
+            System.out.println("No need to checkout the current branch.");
+            System.exit(0);
+        }
+        presentTree.present = presentTree.branchset.get(name);
+        String newer = presentTree.present.head;
+        filewash(presentTree, newer);
     }
     public static void branch(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
@@ -275,7 +302,14 @@ public class Repository {
         writeObject(committree,presentTree);
     }
     public static void reset(String x) {
-
+        CommitTree presentTree = readObject(committree, CommitTree.class);
+        File a = new File(commitPath + x);
+        if (!a.exists()) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+        presentTree.present.head = x;
+        filewash(presentTree, x);
     }
-
+    
 }
