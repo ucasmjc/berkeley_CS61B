@@ -38,6 +38,7 @@ public class CommitTree implements Serializable {
         Commit first = new Commit("initial commit");
         branchset = new TreeMap<>();
         present = new branch("master", first.shaCode());
+        branchset.put("master", present);
         HEAD = present.head;
         createcomfile(first);
     }

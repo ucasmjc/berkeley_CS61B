@@ -100,7 +100,7 @@ public class Repository {
         next.document = (TreeMap<String, String>) present.document.clone();
         File[] added = addpart.listFiles();
         File[] removed = removepart.listFiles();
-        if (added.equals(null) && removed.equals(null)) {
+        if (added.length == 0 && removed.length == 0) {
             System.out.println("No changes added to the commit.");
             return;
         }
@@ -189,7 +189,12 @@ public class Repository {
 
     }
     private static void checkout(String name, String id) {
-        Commit present = readObject(new File(commitPath + id), Commit.class);
+        File a = new File(commitPath + id);
+        if (!a.exists()) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+        Commit present = readObject(a, Commit.class);
         String y = present.document.get(name);
         if (y == null) {
             System.out.println("File does not exist in that commit.");
