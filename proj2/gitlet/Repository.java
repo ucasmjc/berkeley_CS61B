@@ -70,7 +70,7 @@ public class Repository {
             e.printStackTrace();
         }
     }
-    public static void add(String x) {//与当前commit对比
+    public static void add(String x) {
         File presentfile = new File(x);
         if (presentfile.exists()) {
             boolean mark = true;
@@ -105,7 +105,7 @@ public class Repository {
             System.out.println("No changes added to the commit.");
             return;
         }
-        for (File i : added) {//假设都是添加的
+        for (File i : added) {
             byte[] y = readContents(i);
             String x = sha1(y);
             String q = i.getName();
@@ -138,9 +138,12 @@ public class Repository {
                 return;
             }
         } else {
+            File a = new File(x);
+            a.delete();
             File wait = new File(".gitlet/stage/removepart/" + x);
-            File e = new File(".gitlet/content/" + y);
-            writeContents(wait, readContents(e));
+            if (!wait.exists()) {
+                createFile(wait);
+            }
         }
     }
     private static Commit getparent(Commit x) {

@@ -21,7 +21,7 @@ public class CommitTree implements Serializable {
     }
 
 
-    String HEAD;//永远指向当前的
+    String HEAD;
     TreeMap<String, branch> branchset;
     branch present;
     /*public CommitTree(){
@@ -46,7 +46,7 @@ public class CommitTree implements Serializable {
         File x = new File(".gitlet/commit/" + y.shaCode);
         writeObject(x, y);
     }
-    public void add(Commit com) {//没考虑分支
+    public void add(Commit com) {
         com.parent = HEAD;
         com.time();
         com.shaCode();
