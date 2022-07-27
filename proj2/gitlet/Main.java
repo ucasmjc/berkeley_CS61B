@@ -25,7 +25,7 @@ public class Main {
                 break;
                 // TODO: handle the `add [filename]` command
             case "commit":
-                if (args[1] == null||args[1]=="") {
+                if (args[1].length()==0) {
                     System.out.println("Please enter a commit message.");
                     System.exit(0);
                 }
@@ -47,9 +47,9 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
-                if (args[1].equals("--")) {
-                    Repository.checkout1(args[2]);
-                } else if (args[2].equals("--")) {
+                if (args[1].substring(0,2)=="--") {
+                    Repository.checkout1(args[1].substring(2));
+                } else if (args[1].indexOf("--")>0) {
                     Repository.checkout2(args[1], args[3]);
                 } else {
                     Repository.chenkout3(args[1]);

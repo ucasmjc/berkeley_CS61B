@@ -78,6 +78,7 @@ public class Repository {
             Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
             File[] added = stage.listFiles();
             File wait = join(".gitlet", "stage", "addpart", x);
+            File test = join(".gitlet", "stage", "removepart", x);
             byte[] data = readContents(presentfile);
             if (present.document.containsKey(x)) {
                 if (sha1(data).equals(present.document.get(x))) {
@@ -88,6 +89,9 @@ public class Repository {
             writeContents(wait, data);
             if (!wait.exists()) {
                 createFile(wait);
+            }
+            if (test.exists()) {
+                test.delete();
             }
         } else {
             System.out.println("File does not exist.");
