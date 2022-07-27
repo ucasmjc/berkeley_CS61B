@@ -47,11 +47,12 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
-                if (args[1].substring(0,2)=="--") {
-                    Repository.checkout1(args[1].substring(2));
-                } else if (args[1].indexOf("--")>0) {
+                if (args[1].equals("--")) {
+                    Repository.checkout1(args[2]);
+                } else if (args[2].equals("--")) {
                     Repository.checkout2(args[1], args[3]);
                 } else {
+                    System.out.println(args[2]);
                     Repository.chenkout3(args[1]);
                 }
                 break;
