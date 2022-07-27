@@ -81,6 +81,7 @@ public class Repository {
             byte[] data = readContents(presentfile);
             if (present.document.containsKey(x)) {
                 if (sha1(data).equals(present.document.get(x))) {
+                    wait.delete();
                     return;
                 }
             }
@@ -129,9 +130,9 @@ public class Repository {
     public static void remove(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
-        boolean mrak = (new File(".gitlet/stage/addpart" + x)).delete();
+        boolean mrak = join(".gitlet/stage/addpart" , x).delete();
         String y = present.document.remove(x);
-        if (y.equals(null)) {
+        if (y==null) {
             if (!mrak) {
                 System.out.println("No reason to remove the file.");
                 return;
@@ -166,7 +167,7 @@ public class Repository {
             Commit y = readObject(i, Commit.class);
             System.out.println("===");
             System.out.println("commit " + y.shaCode);
-            System.out.println("Date:" + y.time);
+            System.out.println("Date: " + y.time);
             System.out.println(y.message);
             System.out.println();
         }
@@ -311,5 +312,7 @@ public class Repository {
         presentTree.present.head = x;
         filewash(presentTree, x);
     }
-    
+    public static void merge (String x) {
+
+    }
 }

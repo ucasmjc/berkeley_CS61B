@@ -5,6 +5,7 @@
  *  @author YOUR NAME HERE
 >>>>>>> 160747451c147c59d8e3cbf70a7afee2b73bebdb
  */
+
 public class Collatz {
 
     /** Buggy implementation of nextNumber! */
@@ -20,6 +21,8 @@ public class Collatz {
 
 
     public static void main(String[] args) {
+        Integer[] ab = new Integer[5];
+        Integer x = (Integer) Search.Linear_Search(ab,1);
         int n = 5;
         System.out.print(n + " ");
         while (n != 1) {

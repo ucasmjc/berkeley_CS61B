@@ -25,13 +25,13 @@ public class Main {
                 break;
                 // TODO: handle the `add [filename]` command
             case "commit":
-                if (args[1] == null) {
+                if (args[1] == null||args[1]=="") {
                     System.out.println("Please enter a commit message.");
                     System.exit(0);
                 }
                 Repository.commit(args[1]);
                 break;
-            case "remove":
+            case "rm":
                 Repository.remove(args[1]);
                 break;
             case "log":
@@ -65,7 +65,8 @@ public class Main {
                 Repository.reset(args[1]);
                 break;
             case "merge":
-
+                Repository.merge(args[1]);
+                break;
             // TODO: FILL THE REST IN
         }
     }
