@@ -1,15 +1,9 @@
 package gitlet;
-
-
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import java.util.*;
 import static gitlet.Utils.*;
-
+import static gitlet.Utils.writeContents;
 // TODO: any imports you need here
 
 /** Represents a gitlet repository.
@@ -293,8 +287,12 @@ public class Repository {
     public static void branch(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         CommitTree.branch newer = new CommitTree.branch(x, presentTree.HEAD);
+        File head = new File(commitPath + presentTree.HEAD);
+        Commit present = readObject(head, Commit.class);
+        present.splited = true;
         presentTree.branchset.put(x, newer);
-        writeObject(committree,presentTree);
+        writeObject(committree, presentTree);
+        writeObject(head, present);
     }
     public static void rmbranch(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
@@ -319,7 +317,139 @@ public class Repository {
         presentTree.present.head = x;
         filewash(presentTree, x);
     }
-    public static void merge (String x) {
-
+    private static void conflict (String next, String b, String c) {
+        File waitt = join(".gitlet", "stage", "addpart", next);
+        String[] bb = readContentsAsString(join(".gitlet/content/", b)).split("\n");
+        String[] cc = readContentsAsString(join(".gitlet/content/", c)).split("\n");
+        String mes = "<<<<<<< HEAD\n";
+        if (b != null) {
+            for (int j = 0; j < bb.length; j++) {
+                if (bb[j] != cc[j]) {
+                    mes += bb[j];
+                }
+            }
+        }
+        mes += "=======\n";
+        if (c != null) {
+            for (int j = 0; j < cc.length; j++) {
+                if (bb[j] != cc[j]) {
+                    mes += cc[j];
+                }
+            }
+        }
+        mes += ">>>>>>>";
+        File nextFile = new File(next);
+        writeContents(nextFile, mes);
+        writeContents(waitt, mes);
+    }
+    private static void check() {
+        File[] added = addpart.listFiles();
+        File[] removed = removepart.listFiles();
+        if (added.length != 0 || removed.length != 0){
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+    }
+    public static void merge(String x) {
+        check();
+        boolean mark = false;
+        CommitTree presentTree = readObject(committree, CommitTree.class);
+        CommitTree.branch present = presentTree.present;
+        CommitTree.branch given = presentTree.branchset.get(x);
+        if (given == null) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+        if (given == present) {
+            System.out.println("Cannot merge a branch with itself.");
+            return;
+        }
+        HashSet givenSplited = new HashSet<String>();
+        Commit used = readObject(new File(commitPath + present.head), Commit.class);
+        Commit gived = readObject(new File(commitPath + given.head), Commit.class);
+        Commit p = gived;
+        Commit q = used;
+        Commit split = null;
+        while (true) {
+            if (q.splited) {
+                givenSplited.add(q.shaCode);
+            }
+            if (q.parent == null) {
+                break;
+            }
+            q = readObject(new File(commitPath + q.parent), Commit.class);
+        }
+        while (true) {
+            if (p.splited) {
+                if (givenSplited.contains(p.shaCode)) {
+                    split = p;
+                    break;
+                }
+            }
+            if (p.parent == null) {
+                break;
+            }
+            p = readObject(new File(commitPath + p.parent), Commit.class);
+        }
+        if (split.equals(gived)) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            return;
+        }
+        if (split.equals(used)) {
+            chenkout3(x);
+            System.out.println("Current branch fast-forwarded.");
+            return;
+        }
+        Iterator<String> iterator = split.document.keySet().iterator();
+        while (iterator.hasNext()) {
+            String next =  iterator.next();
+            String a = split.document.get(next);
+            String b = used.document.remove(next);
+            String c = gived.document.remove(next);
+            File qq = new File(next);
+            if ((a == b && b == c) || a == c || b == c) {
+                continue;
+            } else if (a == b) {
+                if (c == null) {
+                    File y = new File(next);
+                    y.delete();
+                    File wait = new File(".gitlet/stage/removepart/" + next);
+                    if (!wait.exists()) {
+                        createFile(wait);
+                    }
+                } else {
+                    File pp = new File(".gitlet/content/" + c);
+                    byte[] ppp = Utils.readContents(pp);
+                    writeContents(qq, ppp);
+                    File waitt = join(".gitlet", "stage", "addpart", next);
+                    writeContents(waitt, ppp);
+                }
+            } else {
+                conflict(next, b, c);
+                mark = true;
+            }
+        }
+        Iterator<String> iterator1 = used.document.keySet().iterator();
+        while (iterator1.hasNext()) {
+            String next =  iterator1.next();
+            String b = used.document.remove(next);
+            String c = gived.document.remove(next);
+            if (b == c || c == null) {
+                continue;
+            } else {
+                conflict(next, b, c);
+                mark = true;
+            }
+        }
+        Iterator<String> iterator2 = gived.document.keySet().iterator();
+        while (iterator2.hasNext()) {
+            String next =  iterator2.next();
+            String c = gived.document.remove(next);
+            conflict(next, null, c);
+        }
+        commit("Merged " + x + " into " + presentTree.present.name + " .");
+        if (mark) {
+            System.out.println("Encountered a merge conflict.");
+        }
     }
 }

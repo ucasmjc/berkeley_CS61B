@@ -30,12 +30,15 @@ public class Commit implements Serializable{
     public String time;
     public String shaCode;
     public String parent;
+    public boolean splited;
     public TreeMap<String, String> document;
+    public String parent1;
     public Commit(String Mes) {
         parent = null;
         message = Mes;
         time = "Mon Jan 1 08:00:00 1970 +0800";
         document = new TreeMap<>();
+        splited = false;
     }
     public String shaCode() {
         shaCode = Utils.sha1(Utils.serialize(this));

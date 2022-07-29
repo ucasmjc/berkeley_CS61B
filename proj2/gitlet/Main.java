@@ -49,11 +49,10 @@ public class Main {
             case "checkout":
                 if (args[1].equals("--")) {
                     Repository.checkout1(args[2]);
-                } else if (args[2].equals("--")) {
-                    Repository.checkout2(args[1], args[3]);
-                } else {
-                    System.out.println(args[2]);
+                } else if (args.length == 2) {
                     Repository.chenkout3(args[1]);
+                } else {
+                    Repository.checkout2(args[1], args[3]);
                 }
                 break;
             case "branch":
