@@ -421,14 +421,11 @@ public class Repository {
             String a = split.document.get(next);
             String b = used.document.remove(next);
             String c = gived.document.remove(next);
-            System.out.println(a);
-            System.out.println(b);
             File qq = new File(next);
             if ((Objects.equals(a, b) && Objects.equals(b, c)) || Objects.equals(a, c) || Objects.equals(b, c)) {
                 continue;
             } else if (a.equals(b)) {
                 if (c == null) {
-                    System.out.println("11");
                     File y = new File(next);
                     y.delete();
                     File wait = new File(".gitlet/stage/removepart/" + next);
