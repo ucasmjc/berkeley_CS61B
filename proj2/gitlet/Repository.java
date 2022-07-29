@@ -241,15 +241,16 @@ public class Repository {
     }
     private static void filewash (CommitTree presentTree, String newer) {
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
+        Commit next = readObject(new File(commitPath + newer), Commit.class);
         List<String> filelist = plainFilenamesIn(CWD);
         for (String i : filelist) {
             String x = present.document.get(i);
-            if (x == null) {
+            if (x == null && next.document.get(i) != null) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first." + i);
                 System.exit(0);
             } else {
                 File a = new File(i);
-                if (!x.equals(sha1(readContents(a)))) {
+                if (x != (sha1(readContents(a)))) {
                     System.out.println("There is an untracked file in the way; delete it, or add and commit it first." + i);
                     System.exit(0);
                 }
@@ -257,7 +258,7 @@ public class Repository {
             }
         }
         presentTree.HEAD = newer;
-        Commit next = readObject(new File(commitPath + newer), Commit.class);
+
         for (String i : next.document.keySet()) {
             File x = new File(i);
             writeContents(x, readContents(new File(".gitlet/content/" + next.document.get(i))));
@@ -331,11 +332,11 @@ public class Repository {
         if (b != null) {
             for (int j = 0; j < bb.length; j++) {
                 if (cc == null) {
-                    mes += bb[j];
+                    mes += bb[j] + "\n";
                     continue;
                 }
                 if (bb[j] != cc[j]) {
-                    mes += bb[j];
+                    mes += bb[j] + "\n";
                 }
             }
         }
@@ -343,11 +344,11 @@ public class Repository {
         if (c != null) {
             for (int j = 0; j < cc.length; j++) {
                 if (bb == null) {
-                    mes += cc[j];
+                    mes += cc[j] + "\n";
                     continue;
                 }
                 if (bb[j] != cc[j]) {
-                    mes += cc[j];
+                    mes += cc[j] + "\n";
                 }
             }
         }
@@ -420,6 +421,7 @@ public class Repository {
             String a = split.document.get(next);
             String b = used.document.remove(next);
             String c = gived.document.remove(next);
+            System.out.println(a+"\n"+b+"\n"+c);
             File qq = new File(next);
             if ((a == b && b == c) || a == c || b == c) {
                 continue;
@@ -459,7 +461,12 @@ public class Repository {
         while (iterator2.hasNext()) {
             String next =  iterator2.next();
             String c = gived.document.remove(next);
-            conflict(next, null, c);
+            File pp = new File(".gitlet/content/" + c);
+            File qq = new File(next);
+            byte[] ppp = Utils.readContents(pp);
+            writeContents(qq, ppp);
+            File waitt = join(".gitlet", "stage", "addpart", next);
+            writeContents(waitt, ppp);
         }
         commit("Merged " + x + " into " + presentTree.present.name + ".");
         if (mark) {
