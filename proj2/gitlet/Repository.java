@@ -319,11 +319,21 @@ public class Repository {
     }
     private static void conflict (String next, String b, String c) {
         File waitt = join(".gitlet", "stage", "addpart", next);
-        String[] bb = readContentsAsString(join(".gitlet/content/", b)).split("\n");
-        String[] cc = readContentsAsString(join(".gitlet/content/", c)).split("\n");
+        String[] bb = null;
+        String[] cc = null;
+        if (b != null) {
+            bb = readContentsAsString(join(".gitlet/content/", b)).split("\n");
+        }
+        if (c != null) {
+            cc = readContentsAsString(join(".gitlet/content/", c)).split("\n");
+        }
         String mes = "<<<<<<< HEAD\n";
         if (b != null) {
             for (int j = 0; j < bb.length; j++) {
+                if (cc == null) {
+                    mes += bb[j];
+                    continue;
+                }
                 if (bb[j] != cc[j]) {
                     mes += bb[j];
                 }
@@ -332,6 +342,10 @@ public class Repository {
         mes += "=======\n";
         if (c != null) {
             for (int j = 0; j < cc.length; j++) {
+                if (bb == null) {
+                    mes += cc[j];
+                    continue;
+                }
                 if (bb[j] != cc[j]) {
                     mes += cc[j];
                 }
@@ -447,7 +461,7 @@ public class Repository {
             String c = gived.document.remove(next);
             conflict(next, null, c);
         }
-        commit("Merged " + x + " into " + presentTree.present.name + " .");
+        commit("Merged " + x + " into " + presentTree.present.name + ".");
         if (mark) {
             System.out.println("Encountered a merge conflict.");
         }
