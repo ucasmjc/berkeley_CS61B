@@ -421,11 +421,10 @@ public class Repository {
             String a = split.document.get(next);
             String b = used.document.remove(next);
             String c = gived.document.remove(next);
-            System.out.println(a+"\n"+b+"\n"+c);
             File qq = new File(next);
-            if ((a == b && b == c) || a == c || b == c) {
+            if ((Objects.equals(a, b) && Objects.equals(b, c)) || Objects.equals(a, c) || Objects.equals(b, c)) {
                 continue;
-            } else if (a == b) {
+            } else if (a.equals(b)) {
                 if (c == null) {
                     File y = new File(next);
                     y.delete();
