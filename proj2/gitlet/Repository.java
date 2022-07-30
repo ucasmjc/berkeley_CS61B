@@ -289,6 +289,10 @@ public class Repository {
         File head = new File(commitPath + presentTree.HEAD);
         Commit present = readObject(head, Commit.class);
         present.splited = true;
+        if (presentTree.branchset.containsKey(x)) {
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        }
         presentTree.branchset.put(x, newer);
         writeObject(committree, presentTree);
         writeObject(head, present);
@@ -320,8 +324,13 @@ public class Repository {
         File waitt = join(".gitlet", "stage", "addpart", next);
         String[] bb = null;
         String[] cc = null;
+        File w = new File(next);
         if (b != null) {
             bb = readContentsAsString(join(".gitlet/content/", b)).split("\n");
+        } else if (w.exists()) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+
         }
         if (c != null) {
             cc = readContentsAsString(join(".gitlet/content/", c)).split("\n");
@@ -329,7 +338,7 @@ public class Repository {
         String mes = "<<<<<<< HEAD\n";
         if (b != null) {
             for (int j = 0; j < bb.length; j++) {
-                if (cc == null) {
+                if (cc == null || j >= cc.length) {
                     mes += bb[j] + "\n";
                     continue;
                 }
@@ -342,7 +351,7 @@ public class Repository {
         mes += "=======\n";
         if (c != null) {
             for (int j = 0; j < cc.length; j++) {
-                if (bb == null) {
+                if (bb == null || j >= bb.length) {
                     mes += cc[j] + "\n";
                     continue;
                 }
@@ -439,7 +448,6 @@ public class Repository {
                     writeContents(waitt, ppp);
                 }
             } else {
-
                 conflict(next, b, c);
                 mark = true;
             }
@@ -447,7 +455,7 @@ public class Repository {
         Iterator<String> iterator1 = used.document.keySet().iterator();
         while (iterator1.hasNext()) {
             String next =  iterator1.next();
-            String b = used.document.remove(next);
+            String b = used.document.get(next);
             String c = gived.document.remove(next);
             if (b == c || c == null) {
                 continue;
@@ -462,6 +470,10 @@ public class Repository {
             String c = gived.document.remove(next);
             File pp = new File(".gitlet/content/" + c);
             File qq = new File(next);
+            if (qq.exists()) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
             byte[] ppp = Utils.readContents(pp);
             writeContents(qq, ppp);
             File waitt = join(".gitlet", "stage", "addpart", next);

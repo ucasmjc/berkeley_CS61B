@@ -47,12 +47,17 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
+                int length = args.length;
                 if (args[1].equals("--")) {
                     Repository.checkout1(args[2]);
                 } else if (args.length == 2) {
                     Repository.chenkout3(args[1]);
-                } else {
-                    Repository.checkout2(args[1], args[3]);
+                } else if (args.length == 4){
+                    if (args[2].equals("--")) {
+                        Repository.checkout2(args[1], args[3]);
+                    } else {
+                        System.out.println("Incorrect operands.");
+                    }
                 }
                 break;
             case "branch":
@@ -67,6 +72,8 @@ public class Main {
             case "merge":
                 Repository.merge(args[1]);
                 break;
+            default:
+                System.out.println("No command with that name exists.");
             // TODO: FILL THE REST IN
         }
     }
