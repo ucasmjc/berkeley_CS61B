@@ -74,6 +74,10 @@ public class Repository {
             File wait = join(".gitlet", "stage", "addpart", x);
             File test = join(".gitlet", "stage", "removepart", x);
             byte[] data = readContents(presentfile);
+            if (test.exists()) {
+                test.delete();
+                return;
+            }
             if (present.document.containsKey(x)) {
                 if (sha1(data).equals(present.document.get(x))) {
                     wait.delete();
@@ -81,12 +85,6 @@ public class Repository {
                 }
             }
             writeContents(wait, data);
-            if (!wait.exists()) {
-                createFile(wait);
-            }
-            if (test.exists()) {
-                test.delete();
-            }
         } else {
             System.out.println("File does not exist.");
             System.exit(0);
@@ -250,6 +248,8 @@ public class Repository {
                 System.exit(0);
             } else {
                 File a = new File(i);
+                System.out.println(x);
+                System.out.println(sha1(readContents(a)));
                 if (!Objects.equals(x, sha1(readContents(a)))) {
                     System.out.println("There is an untracked file in the way; delete it, or add and commit it first." + i);
                     System.exit(0);
@@ -335,8 +335,9 @@ public class Repository {
                     mes += bb[j] + "\n";
                     continue;
                 }
-                if (bb[j] != cc[j]) {
+                if (bb[j] != cc[j]) {//cc不一定这么长
                     mes += bb[j] + "\n";
+
                 }
             }
         }
