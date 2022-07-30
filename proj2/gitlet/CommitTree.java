@@ -1,20 +1,24 @@
 package gitlet;
 
+
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.*;
 
-import static gitlet.Utils.serialize;
 import static gitlet.Utils.writeObject;
-import static gitlet.Repository.createFile;
 public class CommitTree implements Serializable {
-    public Set<String> fileset;
-    public static class branch implements Serializable {
+    private Set<String> fileset;
+    public Set<String> getFileset() {
+        return fileset;
+    }
+    public void addSet(String x) {
+        this.fileset.add(x);
+    }
+    public static class Branch implements Serializable {
         String name;
         String head;
-        public branch(String na, String he) {
+        public Branch(String na, String he) {
             name = na;
             head = he;
         }
@@ -22,8 +26,8 @@ public class CommitTree implements Serializable {
 
 
     String HEAD;
-    TreeMap<String, branch> branchset;
-    branch present;
+    TreeMap<String, Branch> branchset;
+    Branch present;
     /*public CommitTree(){
         fileset = new HashSet<>();
         Commit first = new Commit("initial commit");
@@ -37,21 +41,21 @@ public class CommitTree implements Serializable {
         fileset = new HashSet<>();
         Commit first = new Commit("initial commit");
         branchset = new TreeMap<>();
-        present = new branch("master", first.shaCode());
+        present = new Branch("master", first.shaCode());
         branchset.put("master", present);
         HEAD = present.head;
         createcomfile(first);
     }
     public void createcomfile(Commit y) {
-        File x = new File(".gitlet/commit/" + y.shaCode);
+        File x = new File(".gitlet/commit/" + y.getShaCode());
         writeObject(x, y);
     }
     public void add(Commit com) {
-        com.parent = HEAD;
+        com.setParent(HEAD);
         com.time();
         com.shaCode();
         createcomfile(com);
-        HEAD = com.shaCode;
+        HEAD = com.getShaCode();
         present.head = HEAD;
     }
     /*public Commit get(String sha) {

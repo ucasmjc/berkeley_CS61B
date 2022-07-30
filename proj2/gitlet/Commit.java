@@ -1,24 +1,16 @@
 package gitlet;
-
-// TODO: any imports you need here
-
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.TreeMap;
-
-import java.util.Date; // TODO: You'll likely use this in this class
-
+import java.util.Date;
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author TODO
+ *  @author JunCheng Ma
  */
-public class Commit implements Serializable{
+public class Commit implements Serializable {
     /**
-     * TODO: add instance variables here.
      *
      * List all instance variables of the Commit class here with a useful
      * comment above them describing what that variable represents and how that
@@ -26,13 +18,40 @@ public class Commit implements Serializable{
      */
 
     /** The message of this Commit. */
-    public String message;
-    public String time;
-    public String shaCode;
-    public String parent;
-    public boolean splited;
+    private String message;
+    private String time;
+    private String shaCode;
+    private String parent;
+    private boolean splited;
     public TreeMap<String, String> document;
-    public String parent1;
+    private String parent1;
+    public String getMessage() {
+        return message;
+    }
+    public TreeMap<String,String> getDocument() {
+        return document;
+    }
+    public void setSplited(boolean x) {
+        this.splited = x;
+    }
+    public void setDocument(TreeMap x) {
+        this.document = x;
+    }
+    public String getTime() {
+        return time;
+    }
+    public String getShaCode() {
+        return shaCode;
+    }
+    public String getParent() {
+        return parent;
+    }
+    public boolean getSplited() {
+        return splited;
+    }
+    public void setParent(String x) {
+        this.parent = x;
+    }
     public Commit(String Mes) {
         parent = null;
         message = Mes;
@@ -50,5 +69,4 @@ public class Commit implements Serializable{
         time = B.format(now) + " +0800";
         return time;
     }
-    /* TODO: fill in the rest of this class. */
 }
