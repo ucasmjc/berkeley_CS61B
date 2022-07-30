@@ -351,7 +351,7 @@ public class Repository {
                 }
             }
         }
-        mes += ">>>>>>>";
+        mes += ">>>>>>>\n";
         File nextFile = new File(next);
         writeContents(nextFile, mes);
         writeContents(waitt, mes);
