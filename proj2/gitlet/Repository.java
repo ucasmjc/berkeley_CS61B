@@ -248,8 +248,6 @@ public class Repository {
                 System.exit(0);
             } else {
                 File a = new File(i);
-                System.out.println(x);
-                System.out.println(sha1(readContents(a)));
                 if (!Objects.equals(x, sha1(readContents(a)))) {
                     System.out.println("There is an untracked file in the way; delete it, or add and commit it first." + i);
                     System.exit(0);
