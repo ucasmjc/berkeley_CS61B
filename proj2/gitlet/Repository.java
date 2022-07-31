@@ -227,7 +227,13 @@ public class Repository {
         System.out.println();
     }
     private static void checkout(String name, String id) {
+        File[] list = new File(commitPath).listFiles();
         File a = new File(commitPath + id);
+        for (File i : list) {
+            if (i.getName().startsWith(id)) {
+                a = i;
+            }
+        }
         if (!a.exists()) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
@@ -264,8 +270,8 @@ public class Repository {
         for (String i : filelist) {
             File a = new File(i);
             String x = present.getDocument().get(i);
-            if (x == null && (next.getDocument().get(i) != null ||
-                    !Objects.equals(next.getDocument().get(i), sha1(readContents(a))) && mark)) {
+            if (x == null && (next.getDocument().get(i) != null
+                    || !Objects.equals(next.getDocument().get(i), sha1(readContents(a)))) && mark) {
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
                 System.exit(0);
@@ -299,7 +305,8 @@ public class Repository {
         for (String i : filelist) {
             File a = new File(i);
             String x = present.getDocument().get(i);
-            if (x == null && (next.getDocument().get(i) != null ||!Objects.equals(next.getDocument().get(i),
+            if (x == null && (next.getDocument().get(i) != null
+                    || !Objects.equals(next.getDocument().get(i),
                     sha1(readContents(a))))) {
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
@@ -343,6 +350,7 @@ public class Repository {
             System.exit(0);
         }
         presentTree.present.head = x;
+        writeObject(committree, presentTree);
         filewash(presentTree, x, true);
     }
     private static void conflict(String next, String b, String c) {
