@@ -236,7 +236,7 @@ public class Repository {
     public static void checkout2(String id, String name) {
         checkout(name, id);
     }
-    private static void filewash(CommitTree presentTree, String newer) {
+    private static void filewash(CommitTree presentTree, String newer, boolean mark) {
         for (File i : addpart.listFiles()) {
             i.delete();
         }
@@ -248,13 +248,13 @@ public class Repository {
         List<String> filelist = plainFilenamesIn(CWD);
         for (String i : filelist) {
             String x = present.document.get(i);
-            if (x == null && next.document.get(i) != null) {
+            if (x == null && next.document.get(i) != null && mark) {
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first." );
                 System.exit(0);
             } else {
                 File a = new File(i);
-                if (!Objects.equals(x, sha1(readContents(a)))) {
+                if (!Objects.equals(x, sha1(readContents(a))) && x != null && mark) {
                     System.out.println("There is an untracked file in the way; "
                             + "delete it, or add and commit it first." );
                     System.exit(0);
@@ -281,7 +281,7 @@ public class Repository {
         }
         presentTree.present = presentTree.branchset.get(name);
         String newer = presentTree.present.head;
-        filewash(presentTree, newer);
+        filewash(presentTree, newer, true);
     }
     public static void branch(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
@@ -318,7 +318,7 @@ public class Repository {
             System.exit(0);
         }
         presentTree.present.head = x;
-        filewash(presentTree, x);
+        filewash(presentTree, x, true);
     }
     private static void conflict(String next, String b, String c) {
         File waitt = join(".gitlet", "stage", "addpart", next);
@@ -330,7 +330,7 @@ public class Repository {
         } else if (w.exists()) {
             CommitTree presentTree = readObject(committree, CommitTree.class);
             CommitTree.Branch present = presentTree.present;
-            reset(present.head);
+            filewash(presentTree, present.head, false);
             System.out.println("There is an untracked file in the way; "
                     + "delete it, or add and commit it first.");
             System.exit(0);
@@ -478,8 +478,6 @@ public class Repository {
             File pp = new File(".gitlet/content/" + c);
             File qq = new File(next);
             if (qq.exists()) {
-                System.out.println("There is an untracked file in the way; delete it, "
-                        + "or add and commit it first.");
                 reset(present.head);
                 System.exit(0);
             }
