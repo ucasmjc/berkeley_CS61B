@@ -28,7 +28,7 @@ public class Commit implements Serializable {
     public String getMessage() {
         return message;
     }
-    public TreeMap<String,String> getDocument() {
+    public TreeMap<String, String> getDocument() {
         return document;
     }
     public void setSplited(boolean x) {
@@ -52,9 +52,9 @@ public class Commit implements Serializable {
     public void setParent(String x) {
         this.parent = x;
     }
-    public Commit(String Mes) {
+    public Commit(String mes) {
         parent = null;
-        message = Mes;
+        message = mes;
         time = "Mon Jan 1 08:00:00 1970 +0800";
         document = new TreeMap<>();
         splited = false;

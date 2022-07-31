@@ -35,7 +35,7 @@ public class Repository {
     private static void commitinit() {
         CommitTree tr = new CommitTree();
         try {
-            writeObject(committree,tr);
+            writeObject(committree, tr);
             committree.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,8 +51,8 @@ public class Repository {
             removepart.mkdir();
             commitinit();
         } else {
-            System.out.println("A Gitlet version-control system already " +
-                    "exists in the current directory.");
+            System.out.println("A Gitlet version-control system already "
+                    + "exists in the current directory.");
             System.exit(0);
         }
     }
@@ -93,7 +93,7 @@ public class Repository {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
         Commit next = new Commit(mes);
-        next.setDocument((TreeMap<String, String>)present.getDocument().clone());
+        next.setDocument((TreeMap<String, String>) present.getDocument().clone());
         File[] added = addpart.listFiles();
         File[] removed = removepart.listFiles();
         if (added.length == 0 && removed.length == 0) {
@@ -105,7 +105,7 @@ public class Repository {
             String x = sha1(y);
             String q = i.getName();
             next.document.put(q, x);
-            join(".gitlet","stage","addpart", q).delete();
+            join(".gitlet", "stage", "addpart", q).delete();
             if (!presentTree.getFileset().contains(x)) {
                 File a = new File(".gitlet/content/" + x);
                 writeContents(a, y);
@@ -125,7 +125,7 @@ public class Repository {
     public static void remove(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
-        boolean mrak = join(".gitlet/stage/addpart" , x).delete();
+        boolean mrak = join(".gitlet/stage/addpart", x).delete();
         String y = present.document.remove(x);
         if (y == null) {
             if (!mrak) {
@@ -237,36 +237,35 @@ public class Repository {
         checkout(name, id);
     }
     private static void filewash(CommitTree presentTree, String newer) {
+        for (File i : addpart.listFiles()) {
+            i.delete();
+        }
+        for (File i : removepart.listFiles()) {
+            i.delete();
+        }
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
         Commit next = readObject(new File(commitPath + newer), Commit.class);
         List<String> filelist = plainFilenamesIn(CWD);
         for (String i : filelist) {
             String x = present.document.get(i);
             if (x == null && next.document.get(i) != null) {
-                System.out.println("There is an untracked file in the way; " +
-                        "delete it, or add and commit it first." + i);
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first." );
                 System.exit(0);
             } else {
                 File a = new File(i);
                 if (!Objects.equals(x, sha1(readContents(a)))) {
-                    System.out.println("There is an untracked file in the way; " +
-                            "delete it, or add and commit it first." + i);
+                    System.out.println("There is an untracked file in the way; "
+                            + "delete it, or add and commit it first." );
                     System.exit(0);
                 }
                 a.delete();
             }
         }
         presentTree.HEAD = newer;
-
         for (String i : next.document.keySet()) {
             File x = new File(i);
             writeContents(x, readContents(new File(".gitlet/content/" + next.document.get(i))));
-        }
-        for (File i : addpart.listFiles()) {
-            i.delete();
-        }
-        for (File i : removepart.listFiles()) {
-            i.delete();
         }
         writeObject(committree, presentTree);
     }
@@ -314,14 +313,14 @@ public class Repository {
     public static void reset(String x) {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         File a = new File(commitPath + x);
-        if(!a.exists()) {
+        if (!a.exists()) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
         presentTree.present.head = x;
         filewash(presentTree, x);
     }
-    private static void conflict (String next, String b, String c) {
+    private static void conflict(String next, String b, String c) {
         File waitt = join(".gitlet", "stage", "addpart", next);
         String[] bb = null;
         String[] cc = null;
@@ -329,10 +328,12 @@ public class Repository {
         if (b != null) {
             bb = readContentsAsString(join(".gitlet/content/", b)).split("\n");
         } else if (w.exists()) {
-            System.out.println("There is an untracked file in the way; " +
-                    "delete it, or add and commit it first.");
+            CommitTree presentTree = readObject(committree, CommitTree.class);
+            CommitTree.Branch present = presentTree.present;
+            reset(present.head);
+            System.out.println("There is an untracked file in the way; "
+                    + "delete it, or add and commit it first.");
             System.exit(0);
-
         }
         if (c != null) {
             cc = readContentsAsString(join(".gitlet/content/", c)).split("\n");
@@ -340,11 +341,11 @@ public class Repository {
         String mes = "<<<<<<< HEAD\n";
         if (b != null) {
             for (int j = 0; j < bb.length; j++) {
-                if(cc == null || j >= cc.length) {
+                if (cc == null || j >= cc.length) {
                     mes += bb[j] + "\n";
                     continue;
                 }
-                if(bb[j] != cc[j]) {//cc不一定这么长
+                if (bb[j] != cc[j]) {
                     mes += bb[j] + "\n";
                 }
             }
@@ -374,25 +375,8 @@ public class Repository {
             System.exit(0);
         }
     }
-    public static void merge(String x) {
-        check();
-        boolean mark = false;
-        CommitTree presentTree = readObject(committree, CommitTree.class);
-        CommitTree.Branch present = presentTree.present;
-        CommitTree.Branch given = presentTree.branchset.get(x);
-        if (given == null) {
-            System.out.println("A branch with that name does not exist.");
-            return;
-        }
-        if (given == present) {
-            System.out.println("Cannot merge a branch with itself.");
-            return;
-        }
+    private static Commit getsplit(Commit p, Commit q) {
         HashSet givenSplited = new HashSet<String>();
-        Commit used = readObject(new File(commitPath + present.head), Commit.class);
-        Commit gived = readObject(new File(commitPath + given.head), Commit.class);
-        Commit p = gived;
-        Commit q = used;
         Commit split = null;
         while (true) {
             if (q.getSplited()) {
@@ -415,14 +399,35 @@ public class Repository {
             }
             p = readObject(new File(commitPath + p.getParent()), Commit.class);
         }
+        return split;
+    }
+    public static void merge(String x) {
+        check();
+        boolean mark = false;
+        CommitTree presentTree = readObject(committree, CommitTree.class);
+        CommitTree.Branch present = presentTree.present;
+        CommitTree.Branch given = presentTree.branchset.get(x);
+        if (given == null) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+        if (given == present) {
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
+        Commit used = readObject(new File(commitPath + present.head), Commit.class);
+        Commit gived = readObject(new File(commitPath + given.head), Commit.class);
+        Commit p = gived;
+        Commit q = used;
+        Commit split = getsplit(p, q);
         if (split.equals(gived)) {
             System.out.println("Given branch is an ancestor of the current branch.");
-            return;
+            System.exit(0);
         }
         if (split.equals(used)) {
             chenkout3(x);
             System.out.println("Current branch fast-forwarded.");
-            return;
+            System.exit(0);
         }
         Iterator<String> iterator = split.document.keySet().iterator();
         while (iterator.hasNext()) {
@@ -431,7 +436,8 @@ public class Repository {
             String b = used.document.remove(next);
             String c = gived.document.remove(next);
             File qq = new File(next);
-            if ((Objects.equals(a, b) && Objects.equals(b, c)) || Objects.equals(a, c) || Objects.equals(b, c)) {
+            if ((Objects.equals(a, b) && Objects.equals(b, c)) || Objects.equals(a, c)
+                    || Objects.equals(b, c)) {
                 continue;
             } else if (a.equals(b)) {
                 if (c == null) {
@@ -472,7 +478,9 @@ public class Repository {
             File pp = new File(".gitlet/content/" + c);
             File qq = new File(next);
             if (qq.exists()) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.out.println("There is an untracked file in the way; delete it, "
+                        + "or add and commit it first.");
+                reset(present.head);
                 System.exit(0);
             }
             byte[] ppp = Utils.readContents(pp);
