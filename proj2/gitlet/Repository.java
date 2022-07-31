@@ -504,7 +504,7 @@ public class Repository {
             System.out.println("A branch with that name does not exist.");
             System.exit(0);
         }
-        if (given == present) {
+        if (given.equals(present)) {
             System.out.println("Cannot merge a branch with itself.");
             System.exit(0);
         }
@@ -513,7 +513,7 @@ public class Repository {
         Commit p = gived;
         Commit q = used;
         Commit split = getsplit(p, q);
-        if (split.equals(gived)) {
+        if (split.getShaCode().equals(given.head)) {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }
