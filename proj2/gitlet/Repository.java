@@ -271,10 +271,11 @@ public class Repository {
             File a = new File(i);
             String x = present.getDocument().get(i);
             if (x == null && (next.getDocument().get(i) != null) && mark) {
-                if (!Objects.equals(next.getDocument().get(i), sha1((Object) readContents(a))))
-                System.out.println("There is an untracked file in the way; "
-                        + "delete it, or add and commit it first.");
-                System.exit(0);
+                if (!Objects.equals(next.getDocument().get(i), sha1((Object) readContents(a)))) {
+                    System.out.println("There is an untracked file in the way; "
+                            + "delete it, or add and commit it first.");
+                    System.exit(0);
+                }
             } else {
                 a.delete();
             }
