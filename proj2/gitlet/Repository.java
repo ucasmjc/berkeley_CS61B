@@ -1,7 +1,4 @@
 package gitlet;
-import org.w3c.dom.Node;
-
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -38,7 +35,7 @@ public class Repository {
     private static class Node {
         Commit key;
         int value;
-        public Node(Commit x, int y) {
+        Node(Commit x, int y) {
             key = x;
             value = y;
         }
@@ -142,7 +139,7 @@ public class Repository {
         CommitTree presentTree = readObject(committree, CommitTree.class);
         Commit present = readObject(new File(commitPath + presentTree.HEAD), Commit.class);
         boolean mrak = join(".gitlet/stage/addpart", x).delete();
-        TreeMap<String, String > fridge = present.getDocument();
+        TreeMap<String, String> fridge = present.getDocument();
         String y = fridge.remove(x);
         present.setDocument(fridge);
         if (y == null) {
@@ -267,8 +264,8 @@ public class Repository {
         for (String i : filelist) {
             File a = new File(i);
             String x = present.getDocument().get(i);
-            if (x == null && (next.getDocument().get(i) != null ||!Objects.equals(next.getDocument().get(i),
-                    sha1(readContents(a))) && mark)) {
+            if (x == null && (next.getDocument().get(i) != null ||
+                    !Objects.equals(next.getDocument().get(i), sha1(readContents(a))) && mark)) {
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
                 System.exit(0);
@@ -279,7 +276,8 @@ public class Repository {
         presentTree.HEAD = newer;
         for (String i : next.getDocument().keySet()) {
             File x = new File(i);
-            writeContents(x, readContents(new File(".gitlet/content/" + next.getDocument().get(i))));
+            writeContents(x, (Object) readContents(new File(".gitlet/content/"
+                    + next.getDocument().get(i))));
         }
         writeObject(committree, presentTree);
     }
@@ -404,7 +402,6 @@ public class Repository {
     }
     private static HashSet help3(Commit q) {
         HashSet givenSplited = new HashSet<String>();
-        Commit split = null;
         while (true) {
             if (q.getSplited()) {
                 givenSplited.add(q.getShaCode());
@@ -413,7 +410,8 @@ public class Repository {
                 break;
             }
             if (q.getParent1() != null) {
-                HashSet<String> subSplited = help3(readObject(new File(commitPath + q.getParent1()), Commit.class));
+                HashSet<String> subSplited = help3(readObject(new
+                        File(commitPath + q.getParent1()), Commit.class));
                 for (String i : subSplited) {
                     givenSplited.add(i);
                 }
@@ -439,7 +437,8 @@ public class Repository {
                 break;
             }
             if (p.getParent1() != null) {
-                Node kv = help4(readObject(new File(commitPath + p.getParent1()), Commit.class), givenSplited);
+                Node kv = help4(readObject(new File(commitPath + p.getParent1()),
+                        Commit.class), givenSplited);
                 if (i + kv.value < j) {
                     j = i + kv.value;
                     split = kv.key;
@@ -472,7 +471,8 @@ public class Repository {
             writeContents(waitt, ppp);
         }
     }
-    private static void help2(String c, String next, CommitTree presentTree, CommitTree.Branch present) {
+    private static void help2(String c, String next, CommitTree presentTree,
+                              CommitTree.Branch present) {
         File pp = new File(".gitlet/content/" + c);
         File qq = new File(next);
         if (qq.exists()) {
@@ -505,7 +505,6 @@ public class Repository {
         Commit p = gived;
         Commit q = used;
         Commit split = getsplit(p, q);
-        System.out.println(split.getMessage());
         if (split.equals(gived)) {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
