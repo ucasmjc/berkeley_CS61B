@@ -1,5 +1,7 @@
 package gitlet;
 
+import java.util.Objects;
+
 import static gitlet.Repository.GITLET_DIR;
 
 /** Driver class for Gitlet, a subset of the Git version-control system.
@@ -16,7 +18,8 @@ public class Main {
             System.exit(0);
         }
         String firstArg = args[0];
-        if (!GITLET_DIR.exists() && firstArg != "init") {
+        if ((!GITLET_DIR.exists()) && !Objects.equals(firstArg, "init")) {
+            System.out.println(firstArg);
             System.out.println("Not in an initialized Gitlet directory.");
             System.exit(0);
         }
