@@ -34,7 +34,7 @@ public class Main {
                     System.out.println("Please enter a commit message.");
                     System.exit(0);
                 }
-                Repository.commit(args[1]);
+                Repository.commit(args[1], null);
                 break;
             case "rm":
                 Repository.remove(args[1]);

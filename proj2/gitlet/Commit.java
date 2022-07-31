@@ -23,8 +23,14 @@ public class Commit implements Serializable {
     private String shaCode;
     private String parent;
     private boolean splited;
-    public TreeMap<String, String> document;
+    private TreeMap<String, String> document;
     private String parent1;
+    public String getParent1() {
+        return parent1;
+    }
+    public void setParent1(String x) {
+        this.parent1 = x;
+    }
     public String getMessage() {
         return message;
     }
@@ -58,6 +64,7 @@ public class Commit implements Serializable {
         time = "Mon Jan 1 08:00:00 1970 +0800";
         document = new TreeMap<>();
         splited = false;
+        parent1 = null;
     }
     public String shaCode() {
         shaCode = Utils.sha1(Utils.serialize(this));
