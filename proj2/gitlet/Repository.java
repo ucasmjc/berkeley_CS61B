@@ -478,7 +478,9 @@ public class Repository {
             File pp = new File(".gitlet/content/" + c);
             File qq = new File(next);
             if (qq.exists()) {
-                reset(present.head);
+                filewash(presentTree, present.head, false);
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
                 System.exit(0);
             }
             byte[] ppp = Utils.readContents(pp);
